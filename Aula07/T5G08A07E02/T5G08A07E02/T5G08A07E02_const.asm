@@ -19,6 +19,7 @@ DUMP_UL   >
 DUMP_BL   >
 DUMP_EXE  >
 DUMP_PT   >
+DUMP_LIM  >
 
 & /0000
 ;***** constantes *****
@@ -43,4 +44,5 @@ DUMP_BL   $ /0001
 DUMP_EXE  $ /0001
 
 DUMP_PT   $ /0001
+DUMP_LIM  $ /0001
 # VARIAVEIS
