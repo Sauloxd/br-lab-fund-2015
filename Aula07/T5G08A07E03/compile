@@ -1,12 +1,12 @@
 rm  *.mvn;
 rm  *.run;
 
-java -cp MLR.jar montador.MvnAsm T5G08A07E02_const.asm;
-java -cp MLR.jar montador.MvnAsm T5G08A07E02_main.asm;
-java -cp MLR.jar montador.MvnAsm T5G08A07E02_dumper.asm;
+java -cp MLR.jar montador.MvnAsm T5G08A07E03_const.asm;
+java -cp MLR.jar montador.MvnAsm T5G08A07E03_main.asm;
+java -cp MLR.jar montador.MvnAsm T5G08A07E03_dumper.asm;
 
 
-java -cp MLR.jar linker.MvnLinker T5G08A07E02_main.mvn T5G08A07E02_dumper.mvn T5G08A07E02_const.mvn -s part1.mvn;
+java -cp MLR.jar linker.MvnLinker T5G08A07E03_main.mvn T5G08A07E03_dumper.mvn T5G08A07E03_const.mvn -s part1.mvn;
 
 java -cp MLR.jar relocator.MvnRelocator part1.mvn final.mvn 0000 000;
 

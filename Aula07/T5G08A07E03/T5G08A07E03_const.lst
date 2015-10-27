@@ -20,6 +20,13 @@
 201e 0000 ; "DUMP_EXE>"		;	DUMP_EXE  >
 2020 0000 ; "DUMP_PT>"		;	DUMP_PT   >
 2022 0000 ; "DUMP_LIM>"		;	DUMP_LIM  >
+2024 0000 ; "DUMP_Count>"		;	DUMP_Count >
+2026 0000 ; "DUMP_CS>"		;	DUMP_CS >
+2028 0000 ; "DUMP_CTE>"		;	DUMP_CTE >
+;***** variaveis para PRINTF() *****
+202a 0000 ; "PRINT_DISCO>"		;	PRINT_DISCO >
+202c 0000 ; "PRINT_UL>"		;	PRINT_UL >
+202e 0000 ; "PRINTF_ACC>"		;	PRINTF_ACC >
 
 				;	& /0000
 ;***** constantes *****
@@ -52,3 +59,18 @@
 				;	DUMP_PT   $ /0001
 8022 0000		;	DUMP_LIM  $ /0001   0
 				;	DUMP_LIM  $ /0001
+8024 0000		;	DUMP_Count $ /0001   0
+				;	DUMP_Count $ /0001
+8026 0000		;	DUMP_CS   $ /0001   0
+				;	DUMP_CS   $ /0001
+8028 0000		;	DUMP_CTE  $ /0001   0
+				;	DUMP_CTE  $ /0001
+
+;***** variaveis para PRINTF() *****
+802a 0000		;	PRINT_DISCO $ /0001   0
+				;	PRINT_DISCO $ /0001
+802c 0000		;	PRINT_UL $ /0001   0
+				;	PRINT_UL $ /0001
+802e 0000		;	PRINTF_ACC $ /0001   0
+				;	PRINTF_ACC $ /0001
+

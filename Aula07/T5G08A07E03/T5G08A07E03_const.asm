@@ -20,6 +20,13 @@ DUMP_BL   >
 DUMP_EXE  >
 DUMP_PT   >
 DUMP_LIM  >
+DUMP_Count >
+DUMP_CS >
+DUMP_CTE >
+;***** variaveis para PRINTF() *****
+PRINT_DISCO >
+PRINT_UL >
+PRINTF_ACC >
 
 & /0000
 ;***** constantes *****
@@ -45,4 +52,13 @@ DUMP_EXE  $ /0001
 
 DUMP_PT   $ /0001
 DUMP_LIM  $ /0001
+DUMP_Count $ /0001
+DUMP_CS   $ /0001
+DUMP_CTE  $ /0001
+
+;***** variaveis para PRINTF() *****
+PRINT_DISCO $ /0001
+PRINT_UL $ /0001
+PRINTF_ACC $ /0001
+
 # VARIAVEIS
