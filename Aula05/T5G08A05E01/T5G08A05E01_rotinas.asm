@@ -76,13 +76,7 @@ GL_loop   JZ semEspaco
           MM GETL1
 GETL1     $ /0001
           MM GL_temp
-          SC UNPACK
-          LD unpackA
-          - GL_EOF
-          JZ EOF ;implement
-
-          LD unpackB
-          - GL_EOF
+          - GL_EOL
           JZ EOF ;implement
           ;fim da verificacao EOL/EOF
           LD AmDownload
@@ -113,9 +107,7 @@ semEspaco LD h0003 ;dispositivo de leitra 3
           +  AmGD ;D000
           MM GETL4
 GETL4     $ /0001
-          SC UNPACK
-          LD unpackA
-          - GL_EOF
+          - GL_EOL
           JZ EOF
           ;Oque esta comentando eh para caso o fim da palavar seja apenas 00, e nao 0000
           ; LD unpackA

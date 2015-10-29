@@ -1,0 +1,52 @@
+;***** constantes *****
+4000 0000 ; "h0000<"		;	h0000 <
+4001 0000 ; "h0001<"		;	h0001 <
+4002 0000 ; "h0002<"		;	h0002 <
+4003 0000 ; "h0100<"		;	h0100 <
+4004 0000 ; "hE300<"		;	hE300 <
+4005 0000 ; "hFF00<"		;	hFF00 <
+4006 0000 ; "hFFFF<"		;	hFFFF <
+4007 0000 ; "h0FFE<"		;	h0FFE <
+4008 0000 ; "AmLoad<"		;	AmLoad <
+4009 0000 ; "AmDownload<"		;	AmDownload <
+4010 0000 ; "h0003<"		;	h0003 <
+;***** variaveis para DUMPER() *****
+4011 0000 ; "DUMP_INI<"		;	DUMP_INI  <
+4012 0000 ; "DUMP_TAM<"		;	DUMP_TAM  <
+4013 0000 ; "DUMP_UL<"		;	DUMP_UL   <
+4014 0000 ; "DUMP_BL<"		;	DUMP_BL   <
+4015 0000 ; "DUMP_EXE<"		;	DUMP_EXE  <
+4016 0000 ; "DUMP_PT<"		;	DUMP_PT   <
+2000 0000 ; "DUMPER>"		;	DUMPER >
+
+
+				;	& /0000
+
+;**************************** DUMPER() ***************************************;
+
+8000 0000		;	DUMPER  $ /0001   0
+				;	DUMPER  $ /0001
+d002 8000		;	        LD h0000 ;inicio
+d004 9016		;	        MM DUMP_PT
+d006 8016		;	loop    LD DUMP_PT
+d008 5002		;	        - h0002
+d00a 5007		;	        - h0FFE
+a00c 1026		;	        JZ endDp
+d00e 8004		;	        LD hE300 ;carrega o tipo do dispositivo
+d010 4013		;	        +  DUMP_UL ;soma com a UL do disp
+a012 901c		;	        MM Dp_wr
+d014 8008		;	        LD AmLoad
+d016 4016		;	        +  DUMP_PT
+a018 901a		;	        MM dp_rd
+801a 0000		;	dp_rd   $  /0001   0
+				;	dp_rd   $  /0001
+801c 0000		;	Dp_wr   $  /0001 ;PD /3UL   0
+				;	Dp_wr   $  /0001 ;PD /3UL
+d01e 8016		;	        LD DUMP_PT
+d020 4002		;	        +  h0002
+d022 9016		;	        MM DUMP_PT
+a024 0006		;	        JP loop
+a026 b000		;	endDp   RS DUMPER
+
+
+

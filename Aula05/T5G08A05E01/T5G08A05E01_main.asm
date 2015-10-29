@@ -43,7 +43,7 @@ START	LV	BUFFER 		; Param 1: endereço do buffer
 		SC	GETLINEF	; Chama subrotina
     JP  position
     K   /0001  
-position OS /01FC
+position OS /01FD
 END		HM	END			; fim do programa
 
 # MAIN
