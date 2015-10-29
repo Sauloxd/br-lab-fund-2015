@@ -4,129 +4,104 @@ h0001 <
 h0002 <
 h0100 <
 hE300 <
+hD300 <
 hFF00 <
 hFFFF <
+hFFFE <
+hFFFC <
 h0FFE <
 AmLoad <
 AmDownload <
 h0003 <
-;***** variaveis para DUMPER() *****
-DUMP_INI  <
-DUMP_TAM  <
-DUMP_UL   <
-DUMP_BL   <
-DUMP_EXE  <
-DUMP_PT   <
-DUMP_LIM  <
-DUMP_Count <
-DUMP_CS <
-DUMP_CTE <
-DUMPER >
+;***** variaveis para LOADER() *****
+LOADER_UL <
+LOADER_INI <
+LOADER_TAM <
+LOADER_FINAL <
+LOADER_DATA_TEMP <
 
-;***** variaveis para PRINTF() *****
-PRINT_DISCO <
-PRINT_UL <
-PRINTF_ACC <
+LOADER_BL_END <
+LOADER_BL_TAM <
+LOADER_BL_CS < 
+
+LOADER >
 
 
 & /0000
 
-;**************************** DUMPER() ***************************************;
+;**************************** LOADER() ***************************************;
+LOADER $ /0001
+          SC READ
+          MM LOADER_INI
+          SC READ
+          MM LOADER_TAM
+          *  h0002
+          +  LOADER_INI
+          MM LOADER_FINAL
+          -  h0FFE ;verifica se cabe na memoria
+          JN verifica
+          LD hFFFE
+          JP veryEnd
 
-DUMPER  $ /0001
-        LD hE300
-        MM PRINT_DISCO
-        LD DUMP_UL
-        MM PRINT_UL
-        LD DUMP_BL
-        MM DUMP_Count
-        LD DUMP_INI ;inicio
-        MM DUMP_PT
-        LD DUMP_TAM  ;32 words
-        * h0002 ; 64 endereços
-        + DUMP_INI
-        MM DUMP_LIM
+verifica      LD LOADER_TAM
+              JZ endLD
 
-        LV DUMP_INI
-        SC PRINTF
-        LV DUMP_TAM
-        SC PRINTF
+lerBloco      SC READ
+              MM LOADER_BL_END
+              SC READ
+              MM LOADER_BL_TAM
 
-headerblock LV DUMP_PT
-            SC PRINTF
-            LD DUMP_TAM
-            - DUMP_BL
-            JN blocoincompleto1
-            JP blococompleto1
+lerDadoBloco  LD LOADER_BL_TAM
+              JZ verificaCS
+              SC READ
+              ; ACC -> data
+              MM LOADER_DATA_TEMP
+              + LOADER_BL_CS ;CHECKSUM
+              MM LOADER_BL_CS
+              LD AmDownload
+              + LOADER_BL_END
+              MM ld_carmem
+              LD LOADER_DATA_TEMP
+ld_carmem     $   /0001
+              ;var de controle
+              LD LOADER_BL_END
+              + h0002
+              MM LOADER_BL_END
+              LD LOADER_BL_TAM
+              - h0001
+              MM LOADER_BL_TAM
+              LD LOADER_TAM
+              - h0001
+              MM LOADER_TAM
+              JP lerDadoBloco
 
-blococompleto        LD DUMP_Count
-        JZ fimDeUmBloco
-        ;Imprime o que esta no acumulador, aqui eh a memoria
-        LD DUMP_PT
-        SC PRINTF
-        ;  Atualiza CheckSUM
-        + DUMP_CS
-        MM DUMP_CS
-        ;
-        LD DUMP_PT
-        +  h0002
-        MM DUMP_PT
-        LD DUMP_Count
-        - h0001
-        MM DUMP_Count
-        LD DUMP_TAM
-        - h0001
-        MM DUMP_TAM
-        JP blococompleto
-endDp   RS DUMPER
+verificaCS    SC READ
+              - LOADER_BL_CS
+              JZ okCS
+              JP erroCS
 
-fimDeUmBloco    LV DUMP_CS
-                SC PRINTF
-                LD DUMP_BL
-                MM DUMP_Count
-                JP headerblock
-
-blocoincompleto LD DUMP_TAM
-                JZ dumpfooter
-                LD DUMP_PT
-                SC PRINTF
-                LD DUMP_PT
-                +  h0002
-                MM DUMP_PT
-                LD DUMP_TAM
-                - h0001
-                MM DUMP_TAM
-                JP blocoincompleto
-
-dumpfooter      LV DUMP_CS
-                SC PRINTF       
-                LV DUMP_EXE
-                SC PRINTF
-                JP endDp
-
-blocoincompleto1 LV DUMP_TAM
-                 SC PRINTF
-                JP blocoincompleto
-                
-blococompleto1  LV DUMP_BL
-                SC PRINTF
-                JP blococompleto
-
-;**************************** PRINTF() ***************************************;
+okCS          JP verifica
 
 
+erroCS        LD hFFFC
+              JP veryEnd
 
-PRINTF $ /0001
-        MM PRINTF_ACC
-        LD PRINT_DISCO ;carrega o tipo do dispositivo
-        +  PRINT_UL ;soma com a UL do disp
-        MM pr_wr
-        LD AmLoad
-        +  PRINTF_ACC
-        MM pr_rd
-pr_rd   $  /0001
-pr_wr   $  /0001 ;PD /3UL
-endPrintF RS PRINTF
+
+endLD       LD LOADER_TAM
+            JZ procFinal
+            JP veryEnd
+
+procFinal   SC READ
+            JP veryEnd
+
+veryEnd     RS LOADER
+
+READ        $ /0001
+            LD hD300
+            +  LOADER_UL
+             MM ld_ins0
+ld_ins0     $ /0001 ;LEU primeira palavra : end inicial
+            RS READ
 
 # PACK
 
