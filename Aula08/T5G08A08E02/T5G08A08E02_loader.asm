@@ -4,51 +4,64 @@ h0001 <
 h0002 <
 h0100 <
 hE300 <
+hD300 <
 hFF00 <
 hFFFF <
+hFFFE <
 h0FFE <
 AmLoad <
 AmDownload <
 h0003 <
-;***** variaveis para DUMPER() *****
-DUMP_INI  <
-DUMP_TAM  <
-DUMP_UL   <
-DUMP_BL   <
-DUMP_EXE  <
-DUMP_PT   <
-DUMP_LIM  <
-DUMPER >
+;***** variaveis para LOADER() *****
+LOADER_UL <
+LOADER_INI <
+LOADER_TAM <
+LOADER_FINAL <
+LOADER_DATA_TEMP <
+LOADER >
 
 
 & /0000
 
-;**************************** DUMPER() ***************************************;
+;**************************** LOADER() ***************************************;
 
-DUMPER  $ /0001
-        LD DUMP_INI ;inicio
-        MM DUMP_PT
-        LD DUMP_TAM  ;32 words
-        * h0002 ; 64 endereços
-        + DUMP_INI
-        MM DUMP_LIM
-loop    LD DUMP_PT
-        - DUMP_LIM
-        JZ endDp
-        LD hE300 ;carrega o tipo do dispositivo
-        +  DUMP_UL ;soma com a UL do disp
-        MM Dp_wr
-        LD AmLoad
-        +  DUMP_PT
-        MM dp_rd
-dp_rd   $  /0001
-Dp_wr   $  /0001 ;PD /3UL
-        LD DUMP_PT
-        +  h0002
-        MM DUMP_PT
-        JP loop
-endDp   RS DUMPER
+LOADER  $ /0001
+          SC READ
+          MM LOADER_INI
 
+          SC READ
+          MM LOADER_TAM
+          *  h0002
+          +  LOADER_INI
+          MM LOADER_FINAL
+          -  h0FFE ;verifica se cabe na memoria
+          JN cabeNaMemoria
+          LD hFFFE
+          JP endLD
+
+cabeNaMemoria JZ endLD
+              SC READ
+              ; ACC -> data
+              MM LOADER_DATA_TEMP
+              LD AmDownload
+              + LOADER_INI
+              MM ld_carmem
+              LD LOADER_DATA_TEMP
+ld_carmem     $   /0001
+              LD LOADER_INI
+              + h0002
+              MM LOADER_INI
+              - LOADER_FINAL
+              JP cabeNaMemoria
+
+endLD   RS LOADER
+
+READ $ /0001
+      LD hD300
+      +  LOADER_UL
+      MM ld_ins0
+ld_ins0   $ /0001 ;LEU primeira palavra : end inicial
+     RS READ
 
 # PACK
 
