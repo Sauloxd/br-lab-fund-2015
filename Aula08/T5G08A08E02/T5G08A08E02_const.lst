@@ -1,0 +1,76 @@
+;***** constantes *****
+2000 0000 ; "h0000>"		;	h0000 >
+2002 0000 ; "h0001>"		;	h0001 >
+2004 0000 ; "h0002>"		;	h0002 >
+2006 0000 ; "h0003>"		;	h0003 >
+2008 0000 ; "h0100>"		;	h0100 >
+2016 0000 ; "hE300>"		;	hE300 >
+2018 0000 ; "hD300>"		;	hD300 >
+200c 0000 ; "hFF00>"		;	hFF00 >
+0000 0000 ; "hFFFF>"		;	hFFFF >
+200a 0000 ; "hFFFE>"		;	hFFFE >
+200e 0000 ; "h0FFE>"		;	h0FFE >
+2010 0000 ; "AmLoad>"		;	AmLoad >
+2012 0000 ; "AmDownload>"		;	AmDownload >
+2014 0000 ; "AmGD>"		;	AmGD >
+
+;***** variaveis para DUMPER() *****
+201a 0000 ; "DUMP_INI>"		;	DUMP_INI  >
+201c 0000 ; "DUMP_TAM>"		;	DUMP_TAM  >
+201e 0000 ; "DUMP_UL>"		;	DUMP_UL   >
+2020 0000 ; "DUMP_BL>"		;	DUMP_BL   >
+2022 0000 ; "DUMP_EXE>"		;	DUMP_EXE  >
+2024 0000 ; "DUMP_PT>"		;	DUMP_PT   >
+2026 0000 ; "DUMP_LIM>"		;	DUMP_LIM  >
+
+;***** variaveis para LOADER() *****
+2028 0000 ; "LOADER_UL>"		;	LOADER_UL >
+202a 0000 ; "LOADER_INI>"		;	LOADER_INI >
+202c 0000 ; "LOADER_TAM>"		;	LOADER_TAM >
+202e 0000 ; "LOADER_FINAL>"		;	LOADER_FINAL >
+2030 0000 ; "LOADER_DATA_TEMP>"		;	LOADER_DATA_TEMP >
+
+				;	& /0000
+;***** constantes *****
+8000 0000		;	h0000 K /0000
+8002 0001		;	h0001 K /0001 
+8004 0002		;	h0002 K /0002
+8006 0003		;	h0003 K /0003  
+8008 0100		;	h0100 K /0100  
+800a fffe		;	hFFFE K /FFFE
+800c ff00		;	hFF00 K /FF00
+800e 0ffe		;	h0FFE K  /0FFE
+8010 8000		;	AmLoad    K /8000
+8012 9000		;	AmDownload k /9000
+8014 d000		;	AmGD    K /D000
+8016 e300		;	hE300 K /E300
+8018 d300		;	hD300 K /D300
+
+;***** variaveis para DUMPER() *****
+801a 0000		;	DUMP_INI  $ /0001   0
+				;	DUMP_INI  $ /0001
+801c 0000		;	DUMP_TAM  $ /0001   0
+				;	DUMP_TAM  $ /0001
+801e 0000		;	DUMP_UL   $ /0001   0
+				;	DUMP_UL   $ /0001
+8020 0000		;	DUMP_BL   $ /0001   0
+				;	DUMP_BL   $ /0001
+8022 0000		;	DUMP_EXE  $ /0001   0
+				;	DUMP_EXE  $ /0001
+
+8024 0000		;	DUMP_PT   $ /0001   0
+				;	DUMP_PT   $ /0001
+8026 0000		;	DUMP_LIM  $ /0001   0
+				;	DUMP_LIM  $ /0001
+
+;***** variaveis para LOADER() *****
+8028 0000		;	LOADER_UL $ /0001   0
+				;	LOADER_UL $ /0001
+802a 0000		;	LOADER_INI $ /0001   0
+				;	LOADER_INI $ /0001
+802c 0000		;	LOADER_TAM $ /0001   0
+				;	LOADER_TAM $ /0001
+802e 0000		;	LOADER_FINAL $ /0001   0
+				;	LOADER_FINAL $ /0001
+8030 0000		;	LOADER_DATA_TEMP $ /0001   0
+				;	LOADER_DATA_TEMP $ /0001

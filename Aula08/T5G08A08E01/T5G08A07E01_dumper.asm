@@ -17,7 +17,6 @@ DUMP_UL   <
 DUMP_BL   <
 DUMP_EXE  <
 DUMP_PT   <
-DUMP_LIM  <
 DUMPER >
 
 
@@ -26,27 +25,11 @@ DUMPER >
 ;**************************** DUMPER() ***************************************;
 
 DUMPER  $ /0001
-
-LD hE300 ;carrega o tipo do dispositivo
-        +  DUMP_UL ;soma com a UL do disp
-        MM Dp_wr2
-        LD DUMP_INI
-Dp_wr2   $  /0001 ;PD /3UL
-
-LD hE300 ;carrega o tipo do dispositivo
-        +  DUMP_UL ;soma com a UL do disp
-        MM Dp_wr3
-        LD DUMP_TAM
-Dp_wr3   $  /0001 ;PD /3UL
-
-        LD DUMP_INI ;inicio
+        LD h0000 ;inicio
         MM DUMP_PT
-        LD DUMP_TAM  ;32 words
-        * h0002 ; 64 endereços
-        + DUMP_INI
-        MM DUMP_LIM
 loop    LD DUMP_PT
-        - DUMP_LIM
+        - h0002
+        - h0FFE
         JZ endDp
         LD hE300 ;carrega o tipo do dispositivo
         +  DUMP_UL ;soma com a UL do disp
