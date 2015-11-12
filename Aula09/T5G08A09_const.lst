@@ -1,0 +1,139 @@
+;***** constantes *****
+2000 0000 ; "h0000>"		;	h0000 >
+2002 0000 ; "h0001>"		;	h0001 >
+2004 0000 ; "h0002>"		;	h0002 >
+2006 0000 ; "h0003>"		;	h0003 >
+2008 0000 ; "h0004>"		;	h0004 >
+200a 0000 ; "h0100>"		;	h0100 >
+2018 0000 ; "hE300>"		;	hE300 >
+200c 0000 ; "hD300>"		;	hD300 >
+200e 0000 ; "hFF00>"		;	hFF00 >
+201a 0000 ; "hFFFF>"		;	hFFFF >
+201c 0000 ; "hFFFC>"		;	hFFFC >
+201e 0000 ; "hFFFE>"		;	hFFFE >
+2010 0000 ; "h0FFE>"		;	h0FFE >
+2020 0000 ; "hBRAN>"		;	hBRAN >
+2022 0000 ; "hDASH>"		;	hDASH >
+2024 0000 ; "hCJB>"		;	hCJB  >
+2026 0000 ; "hEND>"		;	hEND  >
+2028 0000 ; "hCDU>"		;	hCDU  >
+202a 0000 ; "hCLO>"		;	hCLO  >
+2012 0000 ; "AmLoad>"		;	AmLoad >
+2014 0000 ; "AmDownload>"		;	AmDownload >
+2016 0000 ; "AmGD>"		;	AmGD >
+
+;*****variaveis para batch
+2040 0000 ; "dadoLeituraTemp>"		;	dadoLeituraTemp >
+2042 0000 ; "argVrfTemp>"		;	argVrfTemp >
+
+
+
+;***** variaveis para DUMPER() *****
+202c 0000 ; "DUMP_INI>"		;	DUMP_INI  >
+202e 0000 ; "DUMP_TAM>"		;	DUMP_TAM  >
+2030 0000 ; "DUMP_UL>"		;	DUMP_UL   >
+2032 0000 ; "DUMP_BL>"		;	DUMP_BL   >
+2034 0000 ; "DUMP_EXE>"		;	DUMP_EXE  >
+2036 0000 ; "DUMP_PT>"		;	DUMP_PT   >
+2038 0000 ; "DUMP_LIM>"		;	DUMP_LIM  >
+203a 0000 ; "DUMP_Count>"		;	DUMP_Count >
+203c 0000 ; "DUMP_CS>"		;	DUMP_CS >
+203e 0000 ; "DUMP_CTE>"		;	DUMP_CTE >
+;***** variaveis para PRINTF() *****
+2044 0000 ; "PRINT_DISCO>"		;	PRINT_DISCO >
+2046 0000 ; "PRINT_UL>"		;	PRINT_UL >
+2048 0000 ; "PRINTF_ACC>"		;	PRINTF_ACC >
+
+;***** variaveis para LOADER() *****
+204a 0000 ; "LOADER_UL>"		;	LOADER_UL >
+204c 0000 ; "LOADER_INI>"		;	LOADER_INI >
+204e 0000 ; "LOADER_TAM>"		;	LOADER_TAM >
+2050 0000 ; "LOADER_FINAL>"		;	LOADER_FINAL >
+2052 0000 ; "LOADER_DATA_TEMP>"		;	LOADER_DATA_TEMP >
+
+2054 0000 ; "LOADER_BL_END>"		;	LOADER_BL_END >
+2056 0000 ; "LOADER_BL_TAM>"		;	LOADER_BL_TAM >
+2058 0000 ; "LOADER_BL_CS>"		;	LOADER_BL_CS >
+
+				;	& /0000
+;***** constantes *****
+8000 0000		;	h0000 K /0000
+8002 0001		;	h0001 K /0001 
+8004 0002		;	h0002 K /0002
+8006 0003		;	h0003 K /0003  
+8008 0004		;	h0004 K /0004 
+800a 0100		;	h0100 K /0100
+800c d300		;	hD300 K /D300  
+800e ff00		;	hFF00 K /FF00
+8010 0ffe		;	h0FFE K  /0FFE
+8012 8000		;	AmLoad    K /8000
+8014 9000		;	AmDownload k /9000
+8016 d000		;	AmGD    K /D000
+8018 e300		;	hE300 K /E300
+801a ffff		;	hFFFF K  /FFFF
+801c fffc		;	hFFFC K  /FFFC
+801e fffe		;	hFFFE K  /FFFE
+;****CONSTANTES PARA PROJETO
+8020 2020		;	hBRAN K	 /2020 ;bb
+8022 2f2f		;	hDASH K  /2F2f ;// 
+8024 4a42		;	hCJB  K  /4A42 ;JB (maiúsculo!)
+8026 2f2a		;	hEND  K  /2F2A ;/*
+8028 4455		;	hCDU  K  /4455 ;DU
+802a 4c4f		;	hCLO  K  /4C4F ;LO
+
+
+;***** variaveis para DUMPER() *****
+802c 0000		;	DUMP_INI  $ /0001   0
+				;	DUMP_INI  $ /0001
+802e 0000		;	DUMP_TAM  $ /0001   0
+				;	DUMP_TAM  $ /0001
+8030 0000		;	DUMP_UL   $ /0001   0
+				;	DUMP_UL   $ /0001
+8032 0000		;	DUMP_BL   $ /0001   0
+				;	DUMP_BL   $ /0001
+8034 0000		;	DUMP_EXE  $ /0001   0
+				;	DUMP_EXE  $ /0001
+8036 0000		;	DUMP_PT   $ /0001   0
+				;	DUMP_PT   $ /0001
+8038 0000		;	DUMP_LIM  $ /0001   0
+				;	DUMP_LIM  $ /0001
+803a 0000		;	DUMP_Count $ /0001   0
+				;	DUMP_Count $ /0001
+803c 0000		;	DUMP_CS   $ /0001   0
+				;	DUMP_CS   $ /0001
+803e 0000		;	DUMP_CTE  $ /0001   0
+				;	DUMP_CTE  $ /0001
+
+;****VARIAVEIS PARA PROJETO
+8040 0000		;	dadoLeituraTemp $	/0001   0
+				;	dadoLeituraTemp $	/0001
+8042 0000		;	argVrfTemp $ /0001   0
+				;	argVrfTemp $ /0001
+
+
+;***** variaveis para PRINTF() *****
+8044 0000		;	PRINT_DISCO $ /0001   0
+				;	PRINT_DISCO $ /0001
+8046 0000		;	PRINT_UL $ /0001   0
+				;	PRINT_UL $ /0001
+8048 0000		;	PRINTF_ACC $ /0001   0
+				;	PRINTF_ACC $ /0001
+
+;***** variaveis para LOADER() *****
+804a 0000		;	LOADER_UL $ /0001   0
+				;	LOADER_UL $ /0001
+804c 0000		;	LOADER_INI $ /0001   0
+				;	LOADER_INI $ /0001
+804e 0000		;	LOADER_TAM $ /0001   0
+				;	LOADER_TAM $ /0001
+8050 0000		;	LOADER_FINAL $ /0001   0
+				;	LOADER_FINAL $ /0001
+8052 0000		;	LOADER_DATA_TEMP $ /0001   0
+				;	LOADER_DATA_TEMP $ /0001
+
+8054 0000		;	LOADER_BL_END $ /0001   0
+				;	LOADER_BL_END $ /0001
+8056 0000		;	LOADER_BL_TAM $ /0001   0
+				;	LOADER_BL_TAM $ /0001
+8058 0000		;	LOADER_BL_CS $ /0001   0
+				;	LOADER_BL_CS $ /0001
