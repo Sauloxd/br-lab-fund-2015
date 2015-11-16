@@ -1,0 +1,112 @@
+;***** constantes *****
+4000 0000 ; "h0000<"		;	h0000 <
+4001 0000 ; "h0001<"		;	h0001 <
+4002 0000 ; "h0002<"		;	h0002 <
+4003 0000 ; "h0100<"		;	h0100 <
+4004 0000 ; "hE300<"		;	hE300 <
+4005 0000 ; "hD300<"		;	hD300 <
+4006 0000 ; "hFF00<"		;	hFF00 <
+4007 0000 ; "hFFFF<"		;	hFFFF <
+4008 0000 ; "hFFFE<"		;	hFFFE <
+4009 0000 ; "hFFFC<"		;	hFFFC <
+4010 0000 ; "h0FFE<"		;	h0FFE <
+4011 0000 ; "AmLoad<"		;	AmLoad <
+4012 0000 ; "AmDownload<"		;	AmDownload <
+4013 0000 ; "h0003<"		;	h0003 <
+;***** variaveis para LOADER() *****
+4014 0000 ; "LOADER_UL<"		;	LOADER_UL <
+4015 0000 ; "LOADER_INI<"		;	LOADER_INI <
+4016 0000 ; "LOADER_TAM<"		;	LOADER_TAM <
+4017 0000 ; "LOADER_FINAL<"		;	LOADER_FINAL <
+4018 0000 ; "LOADER_DATA_TEMP<"		;	LOADER_DATA_TEMP <
+
+4019 0000 ; "LOADER_BL_END<"		;	LOADER_BL_END <
+4020 0000 ; "LOADER_BL_TAM<"		;	LOADER_BL_TAM <
+4021 0000 ; "LOADER_BL_CS<"		;	LOADER_BL_CS < 
+
+2000 0000 ; "LOADER>"		;	LOADER >
+
+;**** READ() ****
+2068 0000 ; "READ>"		;	READ >
+
+				;	& /0000
+
+;**************************** LOADER() ***************************************;
+8000 0000		;	LOADER $ /0001   0
+				;	LOADER $ /0001
+a002 a068		;	          SC READ
+d004 9015		;	          MM LOADER_INI
+a006 a068		;	          SC READ
+d008 9016		;	          MM LOADER_TAM
+d00a 6002		;	          *  h0002
+d00c 4015		;	          +  LOADER_INI
+d00e 9017		;	          MM LOADER_FINAL
+d010 5010		;	          -  h0FFE ;verifica se cabe na memoria
+a012 2018		;	          JN verifica
+d014 8008		;	          LD hFFFE
+a016 0066		;	          JP veryEnd
+
+d018 8016		;	verifica      LD LOADER_TAM
+a01a 105c		;	              JZ endLD
+
+a01c a068		;	lerBloco      SC READ
+d01e 9019		;	              MM LOADER_BL_END
+a020 a068		;	              SC READ
+d022 9020		;	              MM LOADER_BL_TAM
+
+d024 8020		;	lerDadoBloco  LD LOADER_BL_TAM
+a026 104e		;	              JZ verificaCS
+a028 a068		;	              SC READ
+              ; ACC -> data
+d02a 9018		;	              MM LOADER_DATA_TEMP
+d02c 4021		;	              + LOADER_BL_CS ;CHECKSUM
+d02e 9021		;	              MM LOADER_BL_CS
+d030 8012		;	              LD AmDownload
+d032 4019		;	              + LOADER_BL_END
+a034 9038		;	              MM ld_carmem
+d036 8018		;	              LD LOADER_DATA_TEMP
+8038 0000		;	ld_carmem     $   /0001   0
+				;	ld_carmem     $   /0001
+              ;var de controle
+d03a 8019		;	              LD LOADER_BL_END
+d03c 4002		;	              + h0002
+d03e 9019		;	              MM LOADER_BL_END
+d040 8020		;	              LD LOADER_BL_TAM
+d042 5001		;	              - h0001
+d044 9020		;	              MM LOADER_BL_TAM
+d046 8016		;	              LD LOADER_TAM
+d048 5001		;	              - h0001
+d04a 9016		;	              MM LOADER_TAM
+a04c 0024		;	              JP lerDadoBloco
+
+a04e a068		;	verificaCS    SC READ
+d050 5021		;	              - LOADER_BL_CS
+a052 1056		;	              JZ okCS
+a054 0058		;	              JP erroCS
+
+a056 0018		;	okCS          JP verifica
+
+
+d058 8009		;	erroCS        LD hFFFC
+a05a 0066		;	              JP veryEnd
+
+
+d05c 8016		;	endLD       LD LOADER_TAM
+a05e 1062		;	            JZ procFinal
+a060 0066		;	            JP veryEnd
+
+a062 a068		;	procFinal   SC READ
+a064 0066		;	            JP veryEnd
+
+a066 b000		;	veryEnd     RS LOADER
+
+8068 0000		;	READ        $ /0001   0
+				;	READ        $ /0001
+d06a 8005		;	            LD hD300
+d06c 4014		;	            +  LOADER_UL
+a06e 9070		;	             MM ld_ins0
+8070 0000		;	ld_ins0     $ /0001 ;LEU primeira palavra : end inicial   0
+				;	ld_ins0     $ /0001 ;LEU primeira palavra : end inicial
+a072 b068		;	            RS READ
+
+

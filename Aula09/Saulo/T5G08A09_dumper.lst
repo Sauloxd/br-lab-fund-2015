@@ -1,0 +1,135 @@
+;***** constantes *****
+4000 0000 ; "h0000<"		;	h0000 <
+4001 0000 ; "h0001<"		;	h0001 <
+4002 0000 ; "h0002<"		;	h0002 <
+4003 0000 ; "h0100<"		;	h0100 <
+4004 0000 ; "hE300<"		;	hE300 <
+4005 0000 ; "hFF00<"		;	hFF00 <
+4006 0000 ; "hFFFF<"		;	hFFFF <
+4007 0000 ; "h0FFE<"		;	h0FFE <
+4008 0000 ; "AmLoad<"		;	AmLoad <
+4009 0000 ; "AmDownload<"		;	AmDownload <
+4010 0000 ; "h0003<"		;	h0003 <
+;***** variaveis para DUMPER() *****
+4011 0000 ; "DUMP_INI<"		;	DUMP_INI  <
+4012 0000 ; "DUMP_TAM<"		;	DUMP_TAM  <
+4013 0000 ; "DUMP_UL<"		;	DUMP_UL   <
+4014 0000 ; "DUMP_BL<"		;	DUMP_BL   <
+4015 0000 ; "DUMP_EXE<"		;	DUMP_EXE  <
+4016 0000 ; "DUMP_PT<"		;	DUMP_PT   <
+4017 0000 ; "DUMP_LIM<"		;	DUMP_LIM  <
+4018 0000 ; "DUMP_Count<"		;	DUMP_Count <
+4019 0000 ; "DUMP_CS<"		;	DUMP_CS <
+4020 0000 ; "DUMP_CTE<"		;	DUMP_CTE <
+2000 0000 ; "DUMPER>"		;	DUMPER >
+
+;***** variaveis para PRINTF() *****
+4021 0000 ; "PRINT_DISCO<"		;	PRINT_DISCO <
+4022 0000 ; "PRINT_UL<"		;	PRINT_UL <
+4023 0000 ; "PRINTF_ACC<"		;	PRINTF_ACC <
+
+
+				;	& /0000
+
+;**************************** DUMPER() ***************************************;
+
+8000 0000		;	DUMPER  $ /0001   0
+				;	DUMPER  $ /0001
+d002 8004		;	        LD hE300
+d004 9021		;	        MM PRINT_DISCO
+d006 8013		;	        LD DUMP_UL
+d008 9022		;	        MM PRINT_UL
+d00a 8014		;	        LD DUMP_BL
+d00c 9018		;	        MM DUMP_Count
+d00e 8011		;	        LD DUMP_INI ;inicio
+d010 9016		;	        MM DUMP_PT
+d012 8012		;	        LD DUMP_TAM  ;32 words
+d014 6002		;	        * h0002 ; 64 endereços
+d016 4011		;	        + DUMP_INI
+d018 9017		;	        MM DUMP_LIM
+
+d01a 3011		;	        LV DUMP_INI
+a01c a086		;	        SC PRINTF
+d01e 3012		;	        LV DUMP_TAM
+a020 a086		;	        SC PRINTF
+
+d022 3016		;	headerblock LV DUMP_PT
+a024 a086		;	            SC PRINTF
+d026 8012		;	            LD DUMP_TAM
+d028 5014		;	            - DUMP_BL
+a02a 207a		;	            JN blocoincompleto1
+a02c 0080		;	            JP blococompleto1
+
+d02e 8018		;	blococompleto        LD DUMP_Count
+a030 1050		;	        JZ fimDeUmBloco
+        ;Imprime o que esta no acumulador, aqui eh a memoria
+d032 8016		;	        LD DUMP_PT
+a034 a086		;	        SC PRINTF
+        ;  Atualiza CheckSUM
+d036 4019		;	        + DUMP_CS
+d038 9019		;	        MM DUMP_CS
+        ;
+d03a 8016		;	        LD DUMP_PT
+d03c 4002		;	        +  h0002
+d03e 9016		;	        MM DUMP_PT
+d040 8018		;	        LD DUMP_Count
+d042 5001		;	        - h0001
+d044 9018		;	        MM DUMP_Count
+d046 8012		;	        LD DUMP_TAM
+d048 5001		;	        - h0001
+d04a 9012		;	        MM DUMP_TAM
+a04c 002e		;	        JP blococompleto
+a04e b000		;	endDp   RS DUMPER
+
+d050 3019		;	fimDeUmBloco    LV DUMP_CS
+a052 a086		;	                SC PRINTF
+d054 8014		;	                LD DUMP_BL
+d056 9018		;	                MM DUMP_Count
+a058 0022		;	                JP headerblock
+
+d05a 8012		;	blocoincompleto LD DUMP_TAM
+a05c 1070		;	                JZ dumpfooter
+d05e 8016		;	                LD DUMP_PT
+a060 a086		;	                SC PRINTF
+d062 8016		;	                LD DUMP_PT
+d064 4002		;	                +  h0002
+d066 9016		;	                MM DUMP_PT
+d068 8012		;	                LD DUMP_TAM
+d06a 5001		;	                - h0001
+d06c 9012		;	                MM DUMP_TAM
+a06e 005a		;	                JP blocoincompleto
+
+d070 3019		;	dumpfooter      LV DUMP_CS
+a072 a086		;	                SC PRINTF       
+d074 3015		;	                LV DUMP_EXE
+a076 a086		;	                SC PRINTF
+a078 004e		;	                JP endDp
+
+d07a 3012		;	blocoincompleto1 LV DUMP_TAM
+a07c a086		;	                 SC PRINTF
+a07e 005a		;	                JP blocoincompleto
+                
+d080 3014		;	blococompleto1  LV DUMP_BL
+a082 a086		;	                SC PRINTF
+a084 002e		;	                JP blococompleto
+
+;**************************** PRINTF() ***************************************;
+
+
+
+8086 0000		;	PRINTF $ /0001   0
+				;	PRINTF $ /0001
+d088 9023		;	        MM PRINTF_ACC
+d08a 8021		;	        LD PRINT_DISCO ;carrega o tipo do dispositivo
+d08c 4022		;	        +  PRINT_UL ;soma com a UL do disp
+a08e 9098		;	        MM pr_wr
+d090 8008		;	        LD AmLoad
+d092 4023		;	        +  PRINTF_ACC
+a094 9096		;	        MM pr_rd
+8096 0000		;	pr_rd   $  /0001   0
+				;	pr_rd   $  /0001
+8098 0000		;	pr_wr   $  /0001 ;PD /3UL   0
+				;	pr_wr   $  /0001 ;PD /3UL
+a09a b086		;	endPrintF RS PRINTF
+
+

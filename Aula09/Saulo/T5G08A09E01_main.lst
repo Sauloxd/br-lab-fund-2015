@@ -1,0 +1,174 @@
+; Coloque aqui seus imports
+4000 0000 ; "LOADER<"		;	LOADER          <
+4001 0000 ; "LOADER_UL<"		;	LOADER_UL       <
+4002 0000 ; "DUMPER<"		;	DUMPER    < 
+4003 0000 ; "DUMP_INI<"		;	DUMP_INI  <
+4004 0000 ; "DUMP_TAM<"		;	DUMP_TAM  <
+4005 0000 ; "DUMP_UL<"		;	DUMP_UL   <
+4006 0000 ; "DUMP_BL<"		;	DUMP_BL   <
+4007 0000 ; "DUMP_EXE<"		;	DUMP_EXE  <
+4008 0000 ; "READ<"		;	READ <
+
+;***** variaveis para CHTOI() *****
+4009 0000 ; "CHTOI<"		;	CHTOI <
+4010 0000 ; "chtoiA<"		;	chtoiA  <
+4011 0000 ; "chtoiB<"		;	chtoiB  <
+
+;***** variaveis para ITOCH() *****
+4012 0000 ; "ITOCH<"		;	ITOCH <
+4013 0000 ; "RES1<"		;	RES1 <
+4014 0000 ; "RES2<"		;	RES2 < 
+; CONSTANTS
+;***** variaveis para MonitorBatch() *****
+;****by Manjubs
+4015 0000 ; "hbb<"		;	hbb <
+4016 0000 ; "hDASH<"		;	hDASH <
+4017 0000 ; "hJB<"		;	hJB  <
+4018 0000 ; "hEND<"		;	hEND  <
+4019 0000 ; "hDU<"		;	hDU  <
+4020 0000 ; "hLO<"		;	hLO  <
+4021 0000 ; "hEOL<"		;	hEOL <
+4022 0000 ; "varDU<"		;	varDU <
+4023 0000 ; "wordDU<"		;	wordDU <
+
+4024 0000 ; "h0001<"		;	h0001 <
+4025 0000 ; "h0002<"		;	h0002 <
+4026 0000 ; "h0003<"		;	h0003 <
+4027 0000 ; "h0004<"		;	h0004 <
+4028 0000 ; "h0005<"		;	h0005 <
+4029 0000 ; "hFFFF<"		;	hFFFF <
+
+				;	& 	/0000
+a000 0004		;	MAIN	JP 	INI		; salta para o in�cio do programa
+8002 0000		;	UL		K 	/0000 	; par�metro: UL onde est� o arquivo de batch
+
+a004 8002		;	INI		LD UL			   ;Carrega UL do batch a ser lido
+d006 9001		;	      MM LOADER_UL ;Joga no parametro para dar READ
+      ;INICIO
+d008 a008		;	      SC READ      ;Chama READ
+d00a 5016		;	      -  hDASH     ;Verifica se � DASH
+a00c 1010		;	      JZ moveOn1
+a00e 00b6		;	      JP Erro1     ;TRATAR ERRO1 - inicio de job
+      ; //
+d010 a008		;	moveOn1 SC READ
+d012 5017		;	        - hJB
+a014 1018		;	        JZ moveOn2
+a016 00b6		;	        JP Erro1
+        ; JB          ;TODO POSSIVELMENTE TENHA QUE ADICIONAR JJ
+d018 a008		;	moveOn2 SC READ       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+        ; EOL
+
+d01a a008		;	lerProx       SC READ      ;Voltar a esse loop ao fim de um JOB
+d01c 5018		;	              -  hEND      ;Verifica se ja acabou
+a01e 10b2		;	              JZ ApplyEND  ;Aplica fim
+d020 4018		;	              +  hEND
+              ;  /*
+d022 5021		;	              -  hEOL      ;Verifica se h� erro no fim de job
+a024 10c2		;	              JZ Erro4
+d026 4021		;	              +  hEOL
+              ;  CREL
+d028 5016		;	              -  hDASH     ;Verifica se � DASH
+a02a 102e		;	              JZ contLerProx1
+a02c 00ba		;	              JP Erro2     ;TRATAR ERRO1 - inicio de job
+              ; //
+d02e a008		;	contLerProx1  SC READ
+d030 5020		;	              -  hLO
+a032 103e		;	              JZ ApplyLOAD ;Tratar LOAD
+d034 4020		;	              +  hLO
+d036 5019		;	              -  hDU
+a038 1042		;	              JZ ApplyDUMP ;Tratar DUMP
+a03a 00ba		;	              JP Erro2     ;N�o existe essa funcao
+
+
+
+a03c c03c		;	FIM 	HM	FIM		; fim do programa
+
+;**** JOBS ****
+d03e a008		;	ApplyLOAD SC READ       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+          ; EOL
+          
+a040 001a		;	          JP lerProx
+
+
+;*** DUMP ***
+d042 a008		;	ApplyDUMP SC READ       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+          ; EOL
+d044 8028		;	          LD h0005
+d046 9022		;	          MM varDU      ;Carrega numero de parametros, ira utilizar como contador
+d048 a008		;	readParDU SC READ
+d04a 5021		;	          -  hEOL       ;Se for EOL, vai para bloco de compara��o
+a04c 10a8		;	          JZ endDU
+d04e 4021		;	          +  hEOL       
+          ; Verificar parametros ;
+d050 9010		;	          MM chtoiA
+d052 a008		;	          SC READ
+d054 9011		;	          MM chtoiB
+d056 a009		;	          SC CHTOI
+d058 9023		;	          MM wordDU
+a05a 005c		;	          JP verPar     ;verifica que parametro � esse
+
+d05c 8022		;	verPar    LD varDU
+d05e 5028		;	          -  h0005
+a060 107a		;	          JZ parDU5
+d062 4028		;	          + h0005
+d064 5027		;	          - h0004
+a066 1082		;	          JZ parDU4
+d068 4027		;	          + h0004
+d06a 5026		;	          - h0003
+a06c 108a		;	          JZ parDU3
+d06e 4026		;	          + h0003
+d070 5025		;	          - h0002
+a072 1092		;	          JZ parDU2
+d074 4025		;	          + h0002
+d076 5024		;	          - h0001
+a078 109a		;	          JZ parDU1
+
+d07a 8023		;	parDU5  LD wordDU
+d07c 9006		;	        MM DUMP_BL   ;Tamanho do bloco
+d07e a008		;	        SC READ      ;Descarta bb
+a080 00a0		;	        JP updateVarDU
+d082 8023		;	parDU4  LD wordDU 
+d084 9003		;	        MM DUMP_INI  ;Endereco inicial
+d086 a008		;	        SC READ      ;Descarta bb
+a088 00a0		;	        JP updateVarDU
+d08a 8023		;	parDU3  LD wordDU
+d08c 9004		;	        MM DUMP_TAM  ;tamanho total da imagem
+d08e a008		;	        SC READ      ;Descarta bb
+a090 00a0		;	        JP updateVarDU
+d092 8023		;	parDU2  LD wordDU
+d094 9007		;	        MM DUMP_EXE  ;End da primeira instr executavel
+d096 a008		;	        SC READ      ;Descarta bb
+a098 00a0		;	        JP updateVarDU
+d09a 8023		;	parDU1  LD wordDU
+d09c 9005		;	        MM DUMP_UL   ;end da LU
+a09e 00a0		;	        JP updateVarDU
+
+d0a0 8022		;	updateVarDU LD varDU
+d0a2 5024		;	            - h0001
+d0a4 9022		;	            MM varDU
+a0a6 0048		;	            JP readParDU
+
+d0a8 8022		;	endDU   LD varDU
+a0aa 10ae		;	        JZ executaDU     ;EXECUTA apos receber os parametros
+a0ac 00be		;	        JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
+
+d0ae a002		;	executaDU SC DUMPER
+a0b0 001a		;	          JP lerProx
+
+;*** END OF JOBS ***
+d0b2 8029		;	ApplyEND  LD hFFFF
+a0b4 003c		;	          JP FIM
+
+
+
+
+;**** ERROS ****
+d0b6 8024		;	Erro1 LD h0001
+a0b8 001a		;	      JP lerProx
+d0ba 8025		;	Erro2 LD h0002
+a0bc 001a		;	      JP lerProx
+d0be 8026		;	Erro3 LD h0003
+a0c0 001a		;	      JP lerProx
+d0c2 8027		;	Erro4 LD h0004
+a0c4 001a		;	      JP lerProx
+
