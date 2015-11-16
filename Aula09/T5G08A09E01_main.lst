@@ -1,0 +1,169 @@
+; Coloque aqui seus imports
+4000 0000 ; "LOADER<"		;	LOADER          <
+4001 0000 ; "LOADER_UL<"		;	LOADER_UL       <
+4002 0000 ; "DUMPER<"		;	DUMPER			<
+4003 0000 ; "DUMP_UL<"		;	DUMP_UL   	<
+4004 0000 ; "DUMP_BL<"		;	DUMP_BL <
+4005 0000 ; "DUMP_INI<"		;	DUMP_INI <
+4006 0000 ; "DUMP_TAM<"		;	DUMP_TAM <
+4007 0000 ; "DUMP_EXE<"		;	DUMP_EXE <
+4008 0000 ; "dadoLeituraTemp<"		;	dadoLeituraTemp <
+4009 0000 ; "argVrfTemp<"		;	argVrfTemp <
+4010 0000 ; "hDASH<"		;	hDASH <
+4011 0000 ; "hCJB<"		;	hCJB <
+4012 0000 ; "hCDU<"		;	hCDU <
+4013 0000 ; "hCLO<"		;	hCLO <
+4014 0000 ; "hEND<"		;	hEND <
+4015 0000 ; "hBRAN<"		;	hBRAN <
+4016 0000 ; "h0001<"		;	h0001 <
+4017 0000 ; "h0002<"		;	h0002 <
+4018 0000 ; "h0003<"		;	h0003 <
+4019 0000 ; "h0004<"		;	h0004 <
+4020 0000 ; "h0000<"		;	h0000 <
+4021 0000 ; "hD300<"		;	hD300 <
+
+ 
+				;			& 	/0000
+a000 0004		;	MAIN	JP 	INI		; salta para o in�cio do programa
+8002 0000		;	UL		K 	/0000 	; par�metro: UL onde est� o arquivo de batch
+
+
+a004 8002		;	INI		LD UL 		; coloque aqui o c�digo do seu monitor batch
+a006 a0ba		;			SC READ1
+d008 9008		;			MM dadoLeituraTemp
+d00a 5010		;			- hDASH
+a00c 1010		;			JZ INIOK1 ;redireciona para continuar se for um //.
+a00e 009a		;			JP ERR01  ;processa erro de falta de in�cio do JOB. Numerado de acordo com o enunciado.
+				
+a010 a0ba		;	INIOK1	SC READ1
+d012 9008		;			MM dadoLeituraTemp
+d014 5011		;			- hCJB
+a016 101a		;			JZ LOOPRD
+a018 009a		;			JP ERR01  ;processa erro de falta de in�cio do JOB. Numerado de acordo com o enunciado.
+		
+a01a a0ba		;	LOOPRD	SC READ1		;PULAR LINHA
+a01c a0ba		;			SC READ1		;ler pr�xima instru��o
+d01e 9008		;			MM dadoLeituraTemp ;temp
+d020 5014		;			- hEND	
+a022 10b2		;			JZ FIMOK ; Se tiver o /*, sai com sucesso.
+d024 8008		;			LD dadoLeituraTemp
+d026 5010		;			- hDASH
+a028 102c		;			JZ COMMOK ;Comando n�o reconhecido. N�o tem o //.
+a02a 00a0		;			JP ERR02
+		
+a02c a0ba		;	COMMOK		SC READ1
+d02e 9008		;						MM dadoLeituraTemp
+d030 5012		;						- hCDU
+a032 103a		;						JZ CALLDU ;Se for Dumper, chama o Dumper.
+d034 8008		;						LD dadoLeituraTemp
+d036 5013		;						- hCLO
+a038 103e		;						JZ CALLLO ;Se for Loader, chama o Loader.
+
+		
+		
+		;Saulo, como faremos aqui para ver o final do arquivo?
+	
+a03a a042		;	CALLDU	SC PROCD
+a03c 001a		;			JP LOOPRD ;CONTINUA O LOOP
+
+a03e a064		;	CALLLO	SC PROCL
+a040 001a		;			JP LOOPRD ;CONTINUA O LOOP
+		
+		
+8042 0000		;	PROCD  	$ /0001   0
+				;	PROCD  	$ /0001
+a044 a0ba		;			SC READ1 ;DESCARTA, � pular linha (descarta eol)
+a046 a0ba		;			SC READ1	;l� argumento do Dumper 1-Tamanho bloco
+		;SC VRFARG
+d048 9004		;			MM DUMP_BL
+a04a a0ba		;			SC READ1 ;RETIRA CARACTERES BRANCOS
+a04c a0ba		;			SC READ1 ;l� argumento do Dumper 2-End. Inicial
+		;SC VRFARG
+d04e 9005		;			MM DUMP_INI
+a050 a0ba		;			SC READ1 ;RETIRA CARACTERES BRANCOS
+a052 a0ba		;			SC READ1	;l� argumento do Dumper 3-Tamanho
+		;SC VRFARG
+d054 9006		;			MM DUMP_TAM
+a056 a0ba		;			SC READ1 ;RETIRA CARACTERES BRANCOS
+a058 a0ba		;			SC READ1 ;l� argumento do Dumper 4-Endere�o In�cio Execu��o
+		;SC VRFARG
+d05a 9007		;			MM DUMP_EXE
+a05c a0ba		;			SC READ1 ;RETIRA CARACTERES BRANCOS
+a05e a0ba		;			SC READ1 ;PULA LINHA		
+d060 a002		;			SC DUMPER
+a062 b042		;			RS PROCD
+		
+		
+		
+8064 0000		;	PROCL  	$ /0001   0
+				;	PROCL  	$ /0001
+a066 a0ba		;			SC READ1 ;DESCARTA, � pular linha
+a068 a0ba		;			SC READ1	;l� argumento do Loader
+		;SC VRFARG
+d06a 9001		;			MM LOADER_UL
+d06c a000		;			SC LOADER
+a06e b064		;			RS PROCL
+
+;VERIFICA SE O QUE EST� NO ARGUMENTO � UM ARGUMENTO
+8070 0000		;	VRFARG	$ /0001	   0
+				;	VRFARG	$ /0001	
+d072 9009		;					MM argVrfTemp
+d074 5015		;					- hBRAN
+a076 10a6		;					JZ ERR03
+d078 8009		;					LD argVrfTemp
+d07a 5010		;					- hDASH
+a07c 10a6		;					JZ ERR03
+d07e 8009		;					LD argVrfTemp
+d080 5011		;					- hCJB
+a082 10a6		;					JZ ERR03
+d084 8009		;					LD argVrfTemp
+d086 5014		;					- hEND
+a088 10a6		;					JZ ERR03
+d08a 8009		;					LD argVrfTemp
+d08c 5012		;					- hCDU
+a08e 10a6		;					JZ ERR03
+d090 8009		;					LD argVrfTemp
+d092 5013		;					- hCLO
+a094 10a6		;					JZ ERR03
+d096 8009		;					LD argVrfTemp
+a098 b070		;					RS VRFARG
+		
+		
+d09a 8016		;	ERR01	LD h0001
+809c f0ee		;			OS /0EE						;TRATAMENTO ERRO01 - SEM INICIO JOB			
+a09e 00b8		;			JP FIM
+
+d0a0 8017		;	ERR02	LD h0002
+80a2 f0ee		;			OS /0EE						;TRATAMENTO ERRO02 - COMANDO DESCONHECIDO
+a0a4 00b8		;			JP FIM
+
+d0a6 8018		;	ERR03	LD h0003
+80a8 f0ee		;			OS /0EE						;TRATAMENTO ERRO03 - SEM ARGUMENTO
+a0aa 00b8		;			JP FIM
+
+d0ac 8019		;	ERR04	LD h0004
+80ae f0ee		;			OS /0EE					;TRATAMENTO ERRO04 - SEM INDICADOR FINAL
+a0b0 00b8		;			JP FIM
+
+;-------
+
+
+d0b2 8020		;	FIMOK	LD h0000
+80b4 f0ee		;			OS /0EE
+a0b6 00b8		;			JP FIM
+	
+
+
+	
+a0b8 c0b8		;	FIM 	HM	FIM		; fim do programa
+
+
+80ba 0000		;	READ1        $ /0001   0
+				;	READ1        $ /0001
+d0bc 8021		;	            LD hD300
+a0be 4002		;	            +  UL
+a0c0 90c2		;	            MM ld_ins0
+80c2 0000		;	ld_ins0     $ /0001 ;LEU primeira palavra : end inicial   0
+				;	ld_ins0     $ /0001 ;LEU primeira palavra : end inicial
+a0c4 b0ba		;	            RS READ1
+

@@ -22,6 +22,11 @@ AmLoad >
 AmDownload >
 AmGD >
 
+;*****variaveis para batch
+dadoLeituraTemp >
+argVrfTemp >
+
+
 
 ;***** variaveis para DUMPER() *****
 DUMP_INI  >
@@ -69,9 +74,9 @@ hFFFF K  /FFFF
 hFFFC K  /FFFC
 hFFFE K  /FFFE
 ;****CONSTANTES PARA PROJETO
-hBRAN K	 /2020
+hBRAN K	 /2020 ;bb
 hDASH K  /2F2f ;// 
-hCJB  K  /4A42 ;JB (maiúsculo!)
+hCJB  K  /4A42 ;JB (maiÃºsculo!)
 hEND  K  /2F2A ;/*
 hCDU  K  /4455 ;DU
 hCLO  K  /4C4F ;LO
@@ -91,6 +96,7 @@ DUMP_CTE  $ /0001
 
 ;****VARIAVEIS PARA PROJETO
 dadoLeituraTemp $	/0001
+argVrfTemp $ /0001
 
 
 ;***** variaveis para PRINTF() *****
