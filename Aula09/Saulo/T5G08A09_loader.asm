@@ -28,6 +28,7 @@ LOADER >
 
 ;**** READ() ****
 READ >
+READfromACC >
 
 & /0000
 
@@ -104,6 +105,12 @@ READ        $ /0001
              MM ld_ins0
 ld_ins0     $ /0001 ;LEU primeira palavra : end inicial
             RS READ
+;*** AUX ***
+READfromACC $ /0001
+            + hD300
+            MM ld_ins10
+ld_ins10     $ /0001 ;LEU primeira palavra : end inicial
+            RS READfromACC
 
 # PACK
 

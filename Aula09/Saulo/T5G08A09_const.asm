@@ -35,7 +35,7 @@ hEND  >
 hDU  >
 hLO  >
 hEOL  >
-varDU >
+numPar >
 wordDU >
 
 ;***** variaveis para DUMPER() *****

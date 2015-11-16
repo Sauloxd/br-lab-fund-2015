@@ -28,6 +28,7 @@
 
 ;**** READ() ****
 2068 0000 ; "READ>"		;	READ >
+2074 0000 ; "READfromACC>"		;	READfromACC >
 
 				;	& /0000
 
@@ -108,5 +109,13 @@ a06e 9070		;	             MM ld_ins0
 8070 0000		;	ld_ins0     $ /0001 ;LEU primeira palavra : end inicial   0
 				;	ld_ins0     $ /0001 ;LEU primeira palavra : end inicial
 a072 b068		;	            RS READ
+;*** AUX ***
+8074 0000		;	READfromACC $ /0001   0
+				;	READfromACC $ /0001
+d076 4005		;	            + hD300
+a078 907a		;	            MM ld_ins10
+807a 0000		;	ld_ins10     $ /0001 ;LEU primeira palavra : end inicial   0
+				;	ld_ins10     $ /0001 ;LEU primeira palavra : end inicial
+a07c b074		;	            RS READfromACC
 
 

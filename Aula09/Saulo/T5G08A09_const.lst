@@ -35,7 +35,7 @@
 2064 0000 ; "hDU>"		;	hDU  >
 2066 0000 ; "hLO>"		;	hLO  >
 2068 0000 ; "hEOL>"		;	hEOL  >
-206a 0000 ; "varDU>"		;	varDU >
+206a 0000 ; "numPar>"		;	numPar >
 206c 0000 ; "wordDU>"		;	wordDU >
 
 ;***** variaveis para DUMPER() *****
@@ -180,8 +180,8 @@
 8066 4c4f		;	hLO  K  /4C4F ;LO
 8068 0d0a		;	hEOL K  /0D0A
 
-806a 0000		;	varDU  $  /0001   0
-				;	varDU  $  /0001
+806a 0000		;	numPar  $  /0001   0
+				;	numPar  $  /0001
 806c 0000		;	wordDU  $ /0001   0
 				;	wordDU  $ /0001
 

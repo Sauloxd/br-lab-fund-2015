@@ -8,6 +8,7 @@ DUMP_UL   <
 DUMP_BL   <
 DUMP_EXE  <
 READ <
+READfromACC <
 
 ;***** variaveis para CHTOI() *****
 CHTOI <
@@ -28,7 +29,7 @@ hEND  <
 hDU  <
 hLO  <
 hEOL <
-varDU <
+numPar <
 wordDU <
 
 h0001 <
@@ -45,20 +46,24 @@ UL		K 	/0000 	; parâmetro: UL onde está o arquivo de batch
 INI		LD UL			   ;Carrega UL do batch a ser lido
       MM LOADER_UL ;Joga no parametro para dar READ
       ;INICIO
-      SC READ      ;Chama READ
+      LD UL
+      SC READfromACC      ;Chama READ
       -  hDASH     ;Verifica se é DASH
       JZ moveOn1
       JP Erro1     ;TRATAR ERRO1 - inicio de job
       ; //
-moveOn1 SC READ
+moveOn1   LD UL
+          SC READfromACC
         - hJB
         JZ moveOn2
         JP Erro1
         ; JB          ;TODO POSSIVELMENTE TENHA QUE ADICIONAR JJ
-moveOn2 SC READ       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+moveOn2   LD UL
+          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
         ; EOL
 
-lerProx       SC READ      ;Voltar a esse loop ao fim de um JOB
+lerProx       LD UL
+              SC READfromACC      ;Voltar a esse loop ao fim de um JOB
               -  hEND      ;Verifica se ja acabou
               JZ ApplyEND  ;Aplica fim
               +  hEND
@@ -71,7 +76,8 @@ lerProx       SC READ      ;Voltar a esse loop ao fim de um JOB
               JZ contLerProx1
               JP Erro2     ;TRATAR ERRO1 - inicio de job
               ; //
-contLerProx1  SC READ
+contLerProx1  LD UL
+              SC READfromACC
               -  hLO
               JZ ApplyLOAD ;Tratar LOAD
               +  hLO
@@ -84,30 +90,62 @@ contLerProx1  SC READ
 FIM 	HM	FIM		; fim do programa
 
 ;**** JOBS ****
-ApplyLOAD SC READ       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+ApplyLOAD LD UL
+          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
           ; EOL
-          
-          JP lerProx
-
-
-;*** DUMP ***
-ApplyDUMP SC READ       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
-          ; EOL
-          LD h0005
-          MM varDU      ;Carrega numero de parametros, ira utilizar como contador
-readParDU SC READ
+          LD h0001
+          MM numPar 
+readParLO LD UL
+          SC READfromACC
           -  hEOL       ;Se for EOL, vai para bloco de comparação
-          JZ endDU
+          JZ verificaLO
           +  hEOL       
           ; Verificar parametros ;
           MM chtoiA
-          SC READ
+          LD UL
+          SC READfromACC
           MM chtoiB
           SC CHTOI
           MM wordDU
-          JP verPar     ;verifica que parametro é esse
+          JP verParLO     ;verifica que parametro é esse
 
-verPar    LD varDU
+verParLO  LD numPar            
+          - h0001
+          JZ parLO1
+          
+parLO1    LD wordDU
+          MM LOADER_UL
+          SC updatenumPar
+          JP readParLO
+
+verificaLO LD numPar
+           JZ executaLO     ;EXECUTA apos receber os parametros
+           JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
+
+executaLO SC LOADER
+          JP lerProx
+
+;*** DUMP ***
+ApplyDUMP LD UL
+          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+          ; EOL
+          LD h0005
+          MM numPar      ;Carrega numero de parametros, ira utilizar como contador
+readParDU LD UL
+          SC READfromACC
+          -  hEOL       ;Se for EOL, vai para bloco de comparação
+          JZ verNumPar
+          +  hEOL       
+          ; Verificar parametros ;
+          MM chtoiA
+          LD UL
+          SC READfromACC
+          MM chtoiB
+          SC CHTOI
+          MM wordDU
+          JP verParDU     ;verifica que parametro é esse
+
+verParDU  LD numPar
           -  h0005
           JZ parDU5
           + h0005
@@ -125,32 +163,42 @@ verPar    LD varDU
 
 parDU5  LD wordDU
         MM DUMP_BL   ;Tamanho do bloco
-        SC READ      ;Descarta bb
-        JP updateVarDU
+        LD UL
+        SC READfromACC      ;Descarta bb
+        SC updatenumPar
+        JP readParDU
 parDU4  LD wordDU 
         MM DUMP_INI  ;Endereco inicial
-        SC READ      ;Descarta bb
-        JP updateVarDU
+        LD UL
+        SC READfromACC      ;Descarta bb
+        SC updatenumPar
+        JP readParDU
 parDU3  LD wordDU
         MM DUMP_TAM  ;tamanho total da imagem
-        SC READ      ;Descarta bb
-        JP updateVarDU
+        LD UL
+        SC READfromACC      ;Descarta bb
+        SC updatenumPar
+        JP readParDU
 parDU2  LD wordDU
         MM DUMP_EXE  ;End da primeira instr executavel
-        SC READ      ;Descarta bb
-        JP updateVarDU
+        LD UL
+        SC READfromACC      ;Descarta bb
+        SC updatenumPar
+        JP readParDU
 parDU1  LD wordDU
         MM DUMP_UL   ;end da LU
-        JP updateVarDU
+        SC updatenumPar
+        JP readParDU
 
-updateVarDU LD varDU
+updatenumPar $ /0001
+            LD numPar
             - h0001
-            MM varDU
-            JP readParDU
+            MM numPar
+            RS updatenumPar
 
-endDU   LD varDU
-        JZ executaDU     ;EXECUTA apos receber os parametros
-        JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
+verNumPar   LD numPar
+            JZ executaDU     ;EXECUTA apos receber os parametros
+            JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
 
 executaDU SC DUMPER
           JP lerProx
@@ -171,5 +219,7 @@ Erro3 LD h0003
       JP lerProx
 Erro4 LD h0004
       JP lerProx
+
+
 
 # MAIN
