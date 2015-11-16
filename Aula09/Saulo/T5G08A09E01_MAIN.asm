@@ -32,6 +32,7 @@ hEOL <
 numPar <
 wordDU <
 
+h0000 <
 h0001 <
 h0002 <
 h0003 <
@@ -67,6 +68,10 @@ lerProx       LD UL
               -  hEND      ;Verifica se ja acabou
               JZ ApplyEND  ;Aplica fim
               +  hEND
+              -  hFFFF      ;Verifica se ja eh fim de arquivo
+              JZ Erro4  ;Aplica fim
+              +  hFFFF
+              
               ;  /*
               -  hEOL      ;Verifica se há erro no fim de job
               JZ Erro4
@@ -135,7 +140,10 @@ readParDU LD UL
           SC READfromACC
           -  hEOL       ;Se for EOL, vai para bloco de comparação
           JZ verNumPar
-          +  hEOL       
+          +  hEOL
+          -  hbb       ;Se for EOL, vai para bloco de comparação
+          JZ readParDU
+          +  hbb       
           ; Verificar parametros ;
           MM chtoiA
           LD UL
@@ -163,26 +171,18 @@ verParDU  LD numPar
 
 parDU5  LD wordDU
         MM DUMP_BL   ;Tamanho do bloco
-        LD UL
-        SC READfromACC      ;Descarta bb
         SC updatenumPar
         JP readParDU
 parDU4  LD wordDU 
         MM DUMP_INI  ;Endereco inicial
-        LD UL
-        SC READfromACC      ;Descarta bb
         SC updatenumPar
         JP readParDU
 parDU3  LD wordDU
         MM DUMP_TAM  ;tamanho total da imagem
-        LD UL
-        SC READfromACC      ;Descarta bb
         SC updatenumPar
         JP readParDU
 parDU2  LD wordDU
         MM DUMP_EXE  ;End da primeira instr executavel
-        LD UL
-        SC READfromACC      ;Descarta bb
         SC updatenumPar
         JP readParDU
 parDU1  LD wordDU
@@ -204,7 +204,7 @@ executaDU SC DUMPER
           JP lerProx
 
 ;*** END OF JOBS ***
-ApplyEND  LD hFFFF
+ApplyEND  LD h0000
           JP FIM
 
 
@@ -212,13 +212,17 @@ ApplyEND  LD hFFFF
 
 ;**** ERROS ****
 Erro1 LD h0001
-      JP lerProx
+      OS /00EE 
+      JP FIM
 Erro2 LD h0002
-      JP lerProx
+      OS /00EE 
+      JP FIM
 Erro3 LD h0003
-      JP lerProx
+      OS /00EE 
+      JP FIM
 Erro4 LD h0004
-      JP lerProx
+      OS /00EE
+      JP FIM
 
 
 

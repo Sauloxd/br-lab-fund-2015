@@ -32,12 +32,13 @@
 4023 0000 ; "numPar<"		;	numPar <
 4024 0000 ; "wordDU<"		;	wordDU <
 
-4025 0000 ; "h0001<"		;	h0001 <
-4026 0000 ; "h0002<"		;	h0002 <
-4027 0000 ; "h0003<"		;	h0003 <
-4028 0000 ; "h0004<"		;	h0004 <
-4029 0000 ; "h0005<"		;	h0005 <
-4030 0000 ; "hFFFF<"		;	hFFFF <
+4025 0000 ; "h0000<"		;	h0000 <
+4026 0000 ; "h0001<"		;	h0001 <
+4027 0000 ; "h0002<"		;	h0002 <
+4028 0000 ; "h0003<"		;	h0003 <
+4029 0000 ; "h0004<"		;	h0004 <
+4030 0000 ; "h0005<"		;	h0005 <
+4031 0000 ; "hFFFF<"		;	hFFFF <
 
 				;	& 	/0000
 a000 0004		;	MAIN	JP 	INI		; salta para o in�cio do programa
@@ -50,13 +51,13 @@ a008 8002		;	      LD UL
 d00a a009		;	      SC READfromACC      ;Chama READ
 d00c 5017		;	      -  hDASH     ;Verifica se � DASH
 a00e 1012		;	      JZ moveOn1
-a010 010e		;	      JP Erro1     ;TRATAR ERRO1 - inicio de job
+a010 010a		;	      JP Erro1     ;TRATAR ERRO1 - inicio de job
       ; //
 a012 8002		;	moveOn1   LD UL
 d014 a009		;	          SC READfromACC
 d016 5018		;	        - hJB
 a018 101c		;	        JZ moveOn2
-a01a 010e		;	        JP Erro1
+a01a 010a		;	        JP Erro1
         ; JB          ;TODO POSSIVELMENTE TENHA QUE ADICIONAR JJ
 a01c 8002		;	moveOn2   LD UL
 d01e a009		;	          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
@@ -65,161 +66,164 @@ d01e a009		;	          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar q
 a020 8002		;	lerProx       LD UL
 d022 a009		;	              SC READfromACC      ;Voltar a esse loop ao fim de um JOB
 d024 5019		;	              -  hEND      ;Verifica se ja acabou
-a026 110a		;	              JZ ApplyEND  ;Aplica fim
+a026 1106		;	              JZ ApplyEND  ;Aplica fim
 d028 4019		;	              +  hEND
+d02a 5031		;	              -  hFFFF      ;Verifica se ja eh fim de arquivo
+a02c 111c		;	              JZ Erro4  ;Aplica fim
+d02e 4031		;	              +  hFFFF
+              
               ;  /*
-d02a 5022		;	              -  hEOL      ;Verifica se h� erro no fim de job
-a02c 111a		;	              JZ Erro4
-d02e 4022		;	              +  hEOL
+d030 5022		;	              -  hEOL      ;Verifica se h� erro no fim de job
+a032 111c		;	              JZ Erro4
+d034 4022		;	              +  hEOL
               ;  CREL
-d030 5017		;	              -  hDASH     ;Verifica se � DASH
-a032 1036		;	              JZ contLerProx1
-a034 0112		;	              JP Erro2     ;TRATAR ERRO1 - inicio de job
+d036 5017		;	              -  hDASH     ;Verifica se � DASH
+a038 103c		;	              JZ contLerProx1
+a03a 0110		;	              JP Erro2     ;TRATAR ERRO1 - inicio de job
               ; //
-a036 8002		;	contLerProx1  LD UL
-d038 a009		;	              SC READfromACC
-d03a 5021		;	              -  hLO
-a03c 1048		;	              JZ ApplyLOAD ;Tratar LOAD
-d03e 4021		;	              +  hLO
-d040 5020		;	              -  hDU
-a042 1080		;	              JZ ApplyDUMP ;Tratar DUMP
-a044 0112		;	              JP Erro2     ;N�o existe essa funcao
+a03c 8002		;	contLerProx1  LD UL
+d03e a009		;	              SC READfromACC
+d040 5021		;	              -  hLO
+a042 104e		;	              JZ ApplyLOAD ;Tratar LOAD
+d044 4021		;	              +  hLO
+d046 5020		;	              -  hDU
+a048 1086		;	              JZ ApplyDUMP ;Tratar DUMP
+a04a 0110		;	              JP Erro2     ;N�o existe essa funcao
 
 
 
-a046 c046		;	FIM 	HM	FIM		; fim do programa
+a04c c04c		;	FIM 	HM	FIM		; fim do programa
 
 ;**** JOBS ****
-a048 8002		;	ApplyLOAD LD UL
-d04a a009		;	          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+a04e 8002		;	ApplyLOAD LD UL
+d050 a009		;	          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
           ; EOL
-d04c 8025		;	          LD h0001
-d04e 9023		;	          MM numPar 
-a050 8002		;	readParLO LD UL
-d052 a009		;	          SC READfromACC
-d054 5022		;	          -  hEOL       ;Se for EOL, vai para bloco de compara��o
-a056 1076		;	          JZ verificaLO
-d058 4022		;	          +  hEOL       
+d052 8026		;	          LD h0001
+d054 9023		;	          MM numPar 
+a056 8002		;	readParLO LD UL
+d058 a009		;	          SC READfromACC
+d05a 5022		;	          -  hEOL       ;Se for EOL, vai para bloco de compara��o
+a05c 107c		;	          JZ verificaLO
+d05e 4022		;	          +  hEOL       
           ; Verificar parametros ;
-d05a 9011		;	          MM chtoiA
-a05c 8002		;	          LD UL
-d05e a009		;	          SC READfromACC
-d060 9012		;	          MM chtoiB
-d062 a010		;	          SC CHTOI
-d064 9024		;	          MM wordDU
-a066 0068		;	          JP verParLO     ;verifica que parametro � esse
+d060 9011		;	          MM chtoiA
+a062 8002		;	          LD UL
+d064 a009		;	          SC READfromACC
+d066 9012		;	          MM chtoiB
+d068 a010		;	          SC CHTOI
+d06a 9024		;	          MM wordDU
+a06c 006e		;	          JP verParLO     ;verifica que parametro � esse
 
-d068 8023		;	verParLO  LD numPar            
-d06a 5025		;	          - h0001
-a06c 106e		;	          JZ parLO1
+d06e 8023		;	verParLO  LD numPar            
+d070 5026		;	          - h0001
+a072 1074		;	          JZ parLO1
           
-d06e 8024		;	parLO1    LD wordDU
-d070 9001		;	          MM LOADER_UL
-a072 a0f6		;	          SC updatenumPar
-a074 0050		;	          JP readParLO
+d074 8024		;	parLO1    LD wordDU
+d076 9001		;	          MM LOADER_UL
+a078 a0f2		;	          SC updatenumPar
+a07a 0056		;	          JP readParLO
 
-d076 8023		;	verificaLO LD numPar
-a078 107c		;	           JZ executaLO     ;EXECUTA apos receber os parametros
-a07a 0116		;	           JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
+d07c 8023		;	verificaLO LD numPar
+a07e 1082		;	           JZ executaLO     ;EXECUTA apos receber os parametros
+a080 0116		;	           JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
 
-d07c a000		;	executaLO SC LOADER
-a07e 0020		;	          JP lerProx
+d082 a000		;	executaLO SC LOADER
+a084 0020		;	          JP lerProx
 
 ;*** DUMP ***
-a080 8002		;	ApplyDUMP LD UL
-d082 a009		;	          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+a086 8002		;	ApplyDUMP LD UL
+d088 a009		;	          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
           ; EOL
-d084 8029		;	          LD h0005
-d086 9023		;	          MM numPar      ;Carrega numero de parametros, ira utilizar como contador
-a088 8002		;	readParDU LD UL
-d08a a009		;	          SC READfromACC
-d08c 5022		;	          -  hEOL       ;Se for EOL, vai para bloco de compara��o
-a08e 1100		;	          JZ verNumPar
-d090 4022		;	          +  hEOL       
+d08a 8030		;	          LD h0005
+d08c 9023		;	          MM numPar      ;Carrega numero de parametros, ira utilizar como contador
+a08e 8002		;	readParDU LD UL
+d090 a009		;	          SC READfromACC
+d092 5022		;	          -  hEOL       ;Se for EOL, vai para bloco de compara��o
+a094 10fc		;	          JZ verNumPar
+d096 4022		;	          +  hEOL
+d098 5016		;	          -  hbb       ;Se for EOL, vai para bloco de compara��o
+a09a 108e		;	          JZ readParDU
+d09c 4016		;	          +  hbb       
           ; Verificar parametros ;
-d092 9011		;	          MM chtoiA
-a094 8002		;	          LD UL
-d096 a009		;	          SC READfromACC
-d098 9012		;	          MM chtoiB
-d09a a010		;	          SC CHTOI
-d09c 9024		;	          MM wordDU
-a09e 00a0		;	          JP verParDU     ;verifica que parametro � esse
+d09e 9011		;	          MM chtoiA
+a0a0 8002		;	          LD UL
+d0a2 a009		;	          SC READfromACC
+d0a4 9012		;	          MM chtoiB
+d0a6 a010		;	          SC CHTOI
+d0a8 9024		;	          MM wordDU
+a0aa 00ac		;	          JP verParDU     ;verifica que parametro � esse
 
-d0a0 8023		;	verParDU  LD numPar
-d0a2 5029		;	          -  h0005
-a0a4 10be		;	          JZ parDU5
-d0a6 4029		;	          + h0005
-d0a8 5028		;	          - h0004
-a0aa 10ca		;	          JZ parDU4
-d0ac 4028		;	          + h0004
-d0ae 5027		;	          - h0003
-a0b0 10d6		;	          JZ parDU3
-d0b2 4027		;	          + h0003
-d0b4 5026		;	          - h0002
-a0b6 10e2		;	          JZ parDU2
-d0b8 4026		;	          + h0002
-d0ba 5025		;	          - h0001
-a0bc 10ee		;	          JZ parDU1
+d0ac 8023		;	verParDU  LD numPar
+d0ae 5030		;	          -  h0005
+a0b0 10ca		;	          JZ parDU5
+d0b2 4030		;	          + h0005
+d0b4 5029		;	          - h0004
+a0b6 10d2		;	          JZ parDU4
+d0b8 4029		;	          + h0004
+d0ba 5028		;	          - h0003
+a0bc 10da		;	          JZ parDU3
+d0be 4028		;	          + h0003
+d0c0 5027		;	          - h0002
+a0c2 10e2		;	          JZ parDU2
+d0c4 4027		;	          + h0002
+d0c6 5026		;	          - h0001
+a0c8 10ea		;	          JZ parDU1
 
-d0be 8024		;	parDU5  LD wordDU
-d0c0 9006		;	        MM DUMP_BL   ;Tamanho do bloco
-a0c2 8002		;	        LD UL
-d0c4 a009		;	        SC READfromACC      ;Descarta bb
-a0c6 a0f6		;	        SC updatenumPar
-a0c8 0088		;	        JP readParDU
-d0ca 8024		;	parDU4  LD wordDU 
-d0cc 9003		;	        MM DUMP_INI  ;Endereco inicial
-a0ce 8002		;	        LD UL
-d0d0 a009		;	        SC READfromACC      ;Descarta bb
-a0d2 a0f6		;	        SC updatenumPar
-a0d4 0088		;	        JP readParDU
-d0d6 8024		;	parDU3  LD wordDU
-d0d8 9004		;	        MM DUMP_TAM  ;tamanho total da imagem
-a0da 8002		;	        LD UL
-d0dc a009		;	        SC READfromACC      ;Descarta bb
-a0de a0f6		;	        SC updatenumPar
-a0e0 0088		;	        JP readParDU
+d0ca 8024		;	parDU5  LD wordDU
+d0cc 9006		;	        MM DUMP_BL   ;Tamanho do bloco
+a0ce a0f2		;	        SC updatenumPar
+a0d0 008e		;	        JP readParDU
+d0d2 8024		;	parDU4  LD wordDU 
+d0d4 9003		;	        MM DUMP_INI  ;Endereco inicial
+a0d6 a0f2		;	        SC updatenumPar
+a0d8 008e		;	        JP readParDU
+d0da 8024		;	parDU3  LD wordDU
+d0dc 9004		;	        MM DUMP_TAM  ;tamanho total da imagem
+a0de a0f2		;	        SC updatenumPar
+a0e0 008e		;	        JP readParDU
 d0e2 8024		;	parDU2  LD wordDU
 d0e4 9007		;	        MM DUMP_EXE  ;End da primeira instr executavel
-a0e6 8002		;	        LD UL
-d0e8 a009		;	        SC READfromACC      ;Descarta bb
-a0ea a0f6		;	        SC updatenumPar
-a0ec 0088		;	        JP readParDU
-d0ee 8024		;	parDU1  LD wordDU
-d0f0 9005		;	        MM DUMP_UL   ;end da LU
-a0f2 a0f6		;	        SC updatenumPar
-a0f4 0088		;	        JP readParDU
+a0e6 a0f2		;	        SC updatenumPar
+a0e8 008e		;	        JP readParDU
+d0ea 8024		;	parDU1  LD wordDU
+d0ec 9005		;	        MM DUMP_UL   ;end da LU
+a0ee a0f2		;	        SC updatenumPar
+a0f0 008e		;	        JP readParDU
 
-80f6 0000		;	updatenumPar $ /0001   0
+80f2 0000		;	updatenumPar $ /0001   0
 				;	updatenumPar $ /0001
-d0f8 8023		;	            LD numPar
-d0fa 5025		;	            - h0001
-d0fc 9023		;	            MM numPar
-a0fe b0f6		;	            RS updatenumPar
+d0f4 8023		;	            LD numPar
+d0f6 5026		;	            - h0001
+d0f8 9023		;	            MM numPar
+a0fa b0f2		;	            RS updatenumPar
 
-d100 8023		;	verNumPar   LD numPar
-a102 1106		;	            JZ executaDU     ;EXECUTA apos receber os parametros
-a104 0116		;	            JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
+d0fc 8023		;	verNumPar   LD numPar
+a0fe 1102		;	            JZ executaDU     ;EXECUTA apos receber os parametros
+a100 0116		;	            JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
 
-d106 a002		;	executaDU SC DUMPER
-a108 0020		;	          JP lerProx
+d102 a002		;	executaDU SC DUMPER
+a104 0020		;	          JP lerProx
 
 ;*** END OF JOBS ***
-d10a 8030		;	ApplyEND  LD hFFFF
-a10c 0046		;	          JP FIM
+d106 8025		;	ApplyEND  LD h0000
+a108 004c		;	          JP FIM
 
 
 
 
 ;**** ERROS ****
-d10e 8025		;	Erro1 LD h0001
-a110 0020		;	      JP lerProx
-d112 8026		;	Erro2 LD h0002
-a114 0020		;	      JP lerProx
-d116 8027		;	Erro3 LD h0003
-a118 0020		;	      JP lerProx
-d11a 8028		;	Erro4 LD h0004
-a11c 0020		;	      JP lerProx
+d10a 8026		;	Erro1 LD h0001
+810c f0ee		;	      OS /00EE 
+a10e 004c		;	      JP FIM
+d110 8027		;	Erro2 LD h0002
+8112 f0ee		;	      OS /00EE 
+a114 004c		;	      JP FIM
+d116 8028		;	Erro3 LD h0003
+8118 f0ee		;	      OS /00EE 
+a11a 004c		;	      JP FIM
+d11c 8029		;	Erro4 LD h0004
+811e f0ee		;	      OS /00EE
+a120 004c		;	      JP FIM
 
 
 
