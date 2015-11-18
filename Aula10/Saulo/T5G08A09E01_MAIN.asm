@@ -10,6 +10,10 @@ DUMP_EXE  <
 READ <
 READfromACC <
 
+;***** EXECUTA ****
+EX_END_INI <
+EX_VERIFICA_PAR <
+
 ;***** variaveis para CHTOI() *****
 CHTOI <
 chtoiA  <
@@ -29,6 +33,7 @@ hEND  <
 hDU  <
 hLO  <
 hEOL <
+hEX  <
 numPar <
 wordDU <
 
@@ -88,6 +93,9 @@ contLerProx1  LD UL
               +  hLO
               -  hDU
               JZ ApplyDUMP ;Tratar DUMP
+              +  hDU
+              -  hEX
+              JZ ApplyEX   ;Tratar EX
               JP Erro2     ;Não existe essa funcao
 
 
@@ -95,6 +103,50 @@ contLerProx1  LD UL
 FIM   HM  FIM   ; fim do programa
 
 ;**** JOBS ****
+;**** EXECUTE ****
+ApplyEX   LD UL
+          SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
+          ; EOL
+          LD h0001
+          MM numPar 
+readParEX LD UL
+          SC READfromACC
+          -  hEOL       ;Se for EOL, vai para bloco de comparação
+          JZ verificaEX
+          +  hEOL       
+          ; Verificar parametros ;
+          MM chtoiA
+          LD UL
+          SC READfromACC
+          MM chtoiB
+          SC CHTOI
+          MM wordDU
+          JP verParEX     ;verifica que parametro é esse
+
+verParEX  LD numPar            
+          - h0001
+          JZ parEX1
+          
+parEX1    LD wordDU
+          MM EX_END_INI
+          SC updatenumPar
+          JP readParEX
+
+verificaEX LD numPar
+           JZ executaEX     ;EXECUTA apos receber os parametros
+           JP Erro3       ;FINALIZOU COM ERRO NO NUMERO DE PARAMETROS LIDOS
+
+executaEX LD EX_END_INI
+          -  EX_VERIFICA_PAR
+          JN contEX
+          JP Erro5
+          
+contEX    LD EX_END_INI 
+          OS /00EF
+          JP lerProx
+
+
+;*** LOADER ****
 ApplyLOAD LD UL
           SC READfromACC       ;PULAR EOL -- :TODO devemos tratar quando tem algum mais de um caracter?
           ; EOL
@@ -223,7 +275,9 @@ Erro3 LD h0003
 Erro4 LD h0004
       OS /00EE
       JP FIM
-
+Erro5 LD h0005
+      OS /00EE
+      JP FIM
 
 
 # MAIN
