@@ -41,9 +41,10 @@ public class MvnPcs{
 	 *          Parâmetros do programa. Não utilizado.
 	 */
 	public static void main(String args[]){
-		mvnPcs = new MvnControle();
-		painel = new PainelControle(mvnPcs, false);
-		painel.mostrarTerminal();
+		 mvnPcs = new MvnControle();
+		 painel = new PainelControle(mvnPcs, false);
+		 painel.mostrarTerminal();
+
 	}
 	
 } // Fim da Classe MvnPcs

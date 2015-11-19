@@ -108,12 +108,19 @@ public class GerenciadorDispositivos{
 	public static final int								TYPE_MONITOR										= 1;
 	
 	/** Tipos padrao de dispositivo: impressora */
-	public static final int								TYPE_IMPRESSORA									= 2;
+	public static final int								TYPE_IMPRESSORA									    = 2;
 	
 	/** Tipos padrao de dispositivo: disco */
 	public static final int								TYPE_DISCO											= 3;
 	
+	/** Tipos padrao de dispositivo: Fibonacci */
+	public static final int								TYPE_FIBONACCI										= 6;
 	
+	
+        
+        
+        
+        
 	/**
 	 * Instancia a classe criando uma tabela de dispositivos vazia.<br/>
 	 * <br/>
@@ -209,7 +216,48 @@ public class GerenciadorDispositivos{
 		dispositivos.put(key, newDevice);
 	}
 	
-	
+	/**
+	 * Adiciona um dispositivo Simples no gerenciador.<br/>
+	 * <br/>
+	 * <b>Pre-condicao</b>: Os para¢metros devem ser consistentes.<br/>
+	 * <b>Pos-condicao</b>: o dispositivo sera¡ inserido na posicao
+	 * especificada substituindo o dispositivo que estiver na posicao, se
+	 * houver.
+	 * 
+	 * @param deviceType
+	 *          Tipo do dispositivo que sera¡ adicionado.
+	 * @param logicalUnit
+	 *          Unidade logica do dispositivo que sera¡ adicionado.
+	 * @param newDevice
+	 *          Dispositivo a ser adicionado.
+	 * @throws MVNException
+	 *           Caso ocorra algum erro ao remover o dispositivo.
+	 */
+	public void addDispSimples(int deviceType, int logicalUnit) throws MVNException{
+		if(deviceType < 0 || deviceType >= MAX_DEVICETYPES){
+			throw new MVNException(ERR_INVALID_DEVICETYPE);
+		}
+		if(logicalUnit < 0 || logicalUnit >= MAX_LOGICALUNITS){
+			throw new MVNException(ERR_INVALID_LOGICALUNIT);
+		}
+		switch (deviceType){
+		case 0:
+			String key = MakeHashKey(deviceType, logicalUnit);
+			dispositivos.put(key, new Teclado());
+			break;
+		case 1:
+			String key1 = MakeHashKey(deviceType, logicalUnit);
+			dispositivos.put(key1, new Monitor());
+			break;
+		case 6:
+			String key2 = MakeHashKey(deviceType, logicalUnit);
+			dispositivos.put(key2, new Fibonacci());
+			break;
+		default:
+            throw new MVNException(ERR_INVALID_DEVICETYPE);
+		}
+
+	}
 	/**
 	 * Adiciona um dispositivo no gerenciador.<br/>
 	 * <br/>
@@ -351,10 +399,12 @@ public class GerenciadorDispositivos{
 			// se houver leia
 			outputInfo(MSG_FILE_INICIALIZATION, output);
 			fileInitialization(file);
+                        
 		}else{
 			// se nao houver entao configure o padrao
 			outputInfo(MSG_DEFAULT_INITIALIZATION, output);
 			defaultInitialization();
+                        
 		}
 	}
 	
@@ -423,6 +473,12 @@ public class GerenciadorDispositivos{
 	 */
 	public void reiniciarLeitura(int deviceType, int logicalUnit)
 			throws MVNException{
+            
+           
+            
+             
+           
+            
 	}
 	
 	
@@ -446,7 +502,12 @@ public class GerenciadorDispositivos{
 	 */
 	public Bits8 posicaoLeitura(int deviceType, int logicalUnit)
 			throws MVNException{
-		return null;
+            
+            Dispositivo dispositivo = getDevice(deviceType, logicalUnit);
+            if(!dispositivo.podeLer()) throw new MVNException();
+            
+            return dispositivo.position();
+            
 	}
 	
 	
@@ -472,7 +533,8 @@ public class GerenciadorDispositivos{
 	 */
 	public Bits8 avancarLeitura(int deviceType, int logicalUnit, int val)
 			throws MVNException{
-		return null;
+           
+           return null; 
 	}
 	
 	
@@ -494,7 +556,9 @@ public class GerenciadorDispositivos{
 	 */
 	public Bits8 tamanhoDispositivo(int deviceType, int logicalUnit)
 			throws MVNException{
-		return null;
+            
+            Dispositivo dispositivo = getDevice(deviceType, logicalUnit);            
+            return dispositivo.size();
 	}
 	
 	
@@ -514,7 +578,7 @@ public class GerenciadorDispositivos{
 	 * @throws MVNException
 	 *           Caso o dispositivo nao esteja na tabela de dispositivos.
 	 */
-	private Dispositivo getDevice(int deviceType, int logicalUnit)
+	public Dispositivo getDevice(int deviceType, int logicalUnit)
 			throws MVNException{
 		String key = MakeHashKey(deviceType, logicalUnit);
 		if(dispositivos.containsKey(key)){
@@ -552,7 +616,7 @@ public class GerenciadorDispositivos{
 				int tipo = ExtractDeviceTypeFromKey(key);
 				int uc = ExtractLogicalUnitFromKey(key);
 				String name = dispositivo.getClass().getSimpleName();
-				String detail = !(dispositivo instanceof Monitor || dispositivo instanceof Teclado) ? dispositivo
+				String detail = !(dispositivo instanceof Monitor || dispositivo instanceof Teclado || dispositivo instanceof Fibonacci) ? dispositivo
 						.toString() : "";
 				
 				out.append(System.getProperty("line.separator"));
@@ -582,6 +646,8 @@ public class GerenciadorDispositivos{
 	private void fileInitialization(File file) throws MVNException{
 		try{ // try..catch IOException
 			BufferedReader reader = new BufferedReader(new FileReader(file));
+                        
+                        //implementando funcionalidade de tamanho.
 			try{ // try..finally
 				// realiza parsing do arquivo linha-a-linha
 				String line;
