@@ -1,0 +1,38 @@
+Ideia para processar o CL-
+
+Zerar numpar
+criar loop de leitura de argumentos
+lê argumento, processa, armazena (Assumindo que dá pra ter no máximo F argumentos)
+quando chegar no EOL, chama a OS mesmo.
+
+Ah, já defini o valor de C0.
+
+vamos definir uma porrada de variáveis (Tipo:)
+
+
+ARG0
+ARG1
+ARG2
+ARG3
+ARG4
+ARG5
+ARG6
+ARG7
+ARG8
+ARG9
+ARGA
+ARGB
+ARGC
+ARGD
+ARGE
+ARGF
+
+Faz uma automodificação esperta:
+
+chamada da função = F000 + 00C0 + 0N00
+Onde N é o número de argumentos.
+
+Antes de mexer nos argumentos, vamos fazer algo assim - deixa FFFF nas variáveis pra indicar que elas estão vazias. No Java, checamos isso e só processamos para as que tiverem um valor válido.
+
+Processar isso no Java deve ser razoavelmente tranquilo. 
+
