@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="mvnsaulo:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/mvnsaulo_jar</output-path>
+    <root id="archive" name="mvnsaulo.jar">
+      <element id="module-output" name="mvnsaulo" />
+    </root>
+  </artifact>
+</component>
